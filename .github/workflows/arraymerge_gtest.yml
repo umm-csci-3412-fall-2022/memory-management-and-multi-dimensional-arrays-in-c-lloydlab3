@@ -1,0 +1,40 @@
+name: array-merge-gtest
+
+# The `workflow_dispatch` lets us manually trigger this action
+# through the GitHub web interface. See
+# https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#workflow_dispatch
+# for more details.
+# We probably want to re-run the `array_merge` checks if the
+# definition of `mergesort` changes since this depends on that.
+on:
+  push:
+    paths:
+      - 'array_merge/**'
+      - 'mergesort/mergesort.[ch]'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Cache gtest library
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-gtest-lib
+      with:
+        key: $${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('/usr/local/lib/libgtest.a') }}
+        path: /usr/local/lib/libgtest.a
+        restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+    - name: Install gtest manually
+      run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp lib/*.a /usr/lib && sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a && sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
+    - name: Check out the code
+      uses: actions/checkout@v2
+    - name: Compile test code
+      run: g++ -Wall -g -o array_merge_test ../mergesort/mergesort.c array_merge.c array_merge_test.cpp -lgtest -pthread -std=c++0x
+      working-directory: array_merge
+    - name: Run test
+      run: ./array_merge_test
+      working-directory: array_merge
