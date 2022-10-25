@@ -1,4 +1,5 @@
 #include <gtest/gtest.h>
+#include <stdlib.h>
 
 #include "mergesort.h"
 
