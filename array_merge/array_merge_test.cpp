@@ -18,6 +18,7 @@ TEST(ArrayMerge, reallocate_does_what_I_think_it_does) {
     a[i] = i+1;
   }
   a = (int*) realloc(a, 6*sizeof(int));
+  a[5] = 0;
   int expected[] = {1,2,3,4,5,0};
   arrays_match(6, a, expected);
   free(a);
