@@ -60,6 +60,13 @@ TEST(Mergesort, HandleReversed) {
   arrays_match(7, a, expected);
 }
 
+TEST(Mergesort, HandleDuplicates) {
+  int a[] = { 4, 7, 1, 9, 3, 4, 2, 0, 7};
+  int expected[] = { 0, 1, 2, 3, 4, 4, 7, 7, 9};
+  mergesort(9, a);
+  arrays_match(9, a, expected);
+}
+
 int main(int argc, char* argv[]) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();

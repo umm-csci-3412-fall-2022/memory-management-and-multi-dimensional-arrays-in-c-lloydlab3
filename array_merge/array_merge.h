@@ -5,4 +5,6 @@
 
 int* array_merge(int num_arrays, int* sizes, int** values);
 
+int* get_unique_entries(int size, int* entries);
+
 #endif
